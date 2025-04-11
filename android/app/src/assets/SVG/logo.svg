@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="stockify-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main logo container -->
+  <g transform="translate(50, 40)">
+    <!-- Stacked boxes with 3D effect -->
+    <path d="M60,80 l40,-20 l40,20 l-40,20 z" fill="#2563eb" opacity="0.9"/>
+    <path d="M60,80 l40,20 l40,-20 l-40,-20 z" fill="#1d4ed8" opacity="0.8"/>
+    <path d="M100,100 l0,-40 l40,-20 l0,40 z" fill="#3b82f6" opacity="0.7"/>
+    
+    <!-- Dynamic arrows suggesting movement/flow -->
+    <path id="flowing-arrow" d="M150,70 Q170,60 190,70 T230,70" stroke="#60a5fa" stroke-width="3" fill="none">
+      <animate 
+        attributeName="d" 
+        values="M150,70 Q170,60 190,70 T230,70;M150,75 Q170,65 190,75 T230,75;M150,70 Q170,60 190,70 T230,70" 
+        dur="3s" 
+        repeatCount="indefinite"/>
+    </path>
+    
+    <!-- Animated dots -->
+    <circle id="dot1" cx="150" cy="70" r="4" fill="#93c5fd">
+      <animate 
+        attributeName="cy" 
+        values="70;73;70" 
+        dur="2s" 
+        repeatCount="indefinite"/>
+    </circle>
+    <circle id="dot2" cx="190" cy="70" r="4" fill="#93c5fd">
+      <animate 
+        attributeName="cy" 
+        values="70;67;70" 
+        dur="2s" 
+        repeatCount="indefinite"/>
+    </circle>
+    <circle id="dot3" cx="230" cy="70" r="4" fill="#93c5fd">
+      <animate 
+        attributeName="cy" 
+        values="70;73;70" 
+        dur="2s" 
+        repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- Company name with modern styling -->
+  <text x="200" y="160" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#1e40af">
+    Stock
+    <tspan fill="#3b82f6">ify</tspan>
+  </text>
+
+  <!-- Subtle accent elements -->
+  <circle id="outer-pulse" cx="320" cy="70" r="20" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.5">
+    <animate 
+      attributeName="r" 
+      values="18;20;18" 
+      dur="3s" 
+      repeatCount="indefinite"/>
+  </circle>
+  <circle id="inner-pulse" cx="320" cy="70" r="15" fill="none" stroke="#60a5fa" stroke-width="2" opacity="0.3">
+    <animate 
+      attributeName="r" 
+      values="13;15;13" 
+      dur="3s" 
+      repeatCount="indefinite"/>
+  </circle>
+</svg>
