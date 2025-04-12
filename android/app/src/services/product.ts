@@ -11,3 +11,7 @@ export const getStockLevels = async () => {
     return [];
   }
 };
+export const getProductById = async (id: number) => {
+    const response = await axios.get(`${API_BASE_URL}/Products/${id}`);
+    return response.data;
+  };

@@ -7,7 +7,6 @@ import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { registerStaff } from '../services/userservices';
 import { getLocations } from '../services/locationService';
-// import LogoSvg from '../assets/SVG/logo.svg';
 import UserIcon from '../assets/SVG/user.svg';
 import LockIcon from '../assets/SVG/lock.svg';
 import MailIcon from '../assets/SVG/mail.svg';

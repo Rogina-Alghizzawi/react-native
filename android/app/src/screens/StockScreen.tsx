@@ -9,8 +9,8 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { getStockLevels } from '../services/getproductbycategory'; // Adjust the import path as necessary
-
+import { getStockLevels } from '../services/product'; // Adjust the import path as necessary
+import { useNavigation } from '@react-navigation/native';
 const fallbackImage = require('../assets/Images/logo.png'); // fallback image for products without one
 
 const StockScreen = () => {
@@ -19,6 +19,7 @@ const StockScreen = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const navigation: any = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,83 +53,7 @@ const StockScreen = () => {
     return { uri: secureUri };
   };
 
-//   return (
-//     <View style={styles.container}>
-//       {/* Header */}
-//       <View style={styles.header}>
-//         <Text style={styles.headerText}>Available Stock</Text>
-//       </View>
 
-//       {/* Category Tabs */}
-//       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabScroll}>
-//         {data.map((cat, index) => (
-//           <TouchableOpacity
-//             key={index}
-//             style={[styles.tab, activeCategory === cat.category && styles.activeTab]}
-//             onPress={() => setActiveCategory(cat.category)}
-//           >
-//             <Text
-//   style={[
-//     styles.tabText,
-//     activeCategory === cat.category && styles.activeTabText,
-//   ]}
-// >
-//   {cat.category}
-// </Text>
-
-//           </TouchableOpacity>
-//         ))}
-//         <View style={{ flex: 1 }} />
-//       </ScrollView>
-
-//       {/* Search Box */}
-//       <View style={styles.searchBox}>
-//         <TextInput
-//           placeholder="Search"
-//           style={styles.searchInput}
-//           value={search}
-//           onChangeText={setSearch}
-//         />
-//       </View>
-
-//       {/* Product List */}
-//       <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-//         {loading ? (
-//           <ActivityIndicator size="large" color="#457BFF" style={{ marginTop: 20 }} />
-//         ) : filteredProducts.length === 0 ? (
-//           <Text style={{ textAlign: 'center', marginTop: 20 }}>No Products Found</Text>
-//         ) : (
-//           filteredProducts.map((product, index) => (
-//             <View key={index} style={styles.card}>
-//               <Image source={renderImage(product.image)} style={styles.image} />
-//               <View style={styles.info}>
-//                 <Text style={styles.title}>{product.name}</Text>
-//                 <Text style={styles.label}>
-//                   <Text style={styles.bold}>Quantity: </Text>
-//                   {product.quantity}
-//                 </Text>
-//                 <Text style={styles.label}>
-//                   <Text style={styles.bold}>Supplier ID: </Text>
-//                   {product.supplierId}
-//                 </Text>
-//                 <Text style={styles.label}>
-//                   <Text style={styles.bold}>Measurement: </Text>
-//                   {product.measurement}
-//                 </Text>
-//               </View>
-//               <Text style={styles.arrow}>›</Text>
-//             </View>
-//           ))
-//         )}
-//       </ScrollView>
-
-//       {/* Floating Button */}
-//       <TouchableOpacity style={styles.fab}>
-//         <Text style={styles.fabText}>+</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
 return (
     <View style={styles.container}>
       {/* Header */}
@@ -172,18 +97,25 @@ return (
           <Text style={{ textAlign: 'center', marginTop: 20 }}>No Products Found</Text>
         ) : (
           <ScrollView >
-            {filteredProducts.map((product, index) => (
-              <View key={index} style={styles.card}>
-                <Image source={renderImage(product.image)} style={styles.image} />
-                <View style={styles.info}>
-                  <Text style={styles.title}>{product.name}</Text>
-                  <Text style={styles.label}><Text style={styles.bold}>Quantity: </Text>{product.quantity}</Text>
-                  <Text style={styles.label}><Text style={styles.bold}>Supplier ID: </Text>{product.supplierId}</Text>
-                  <Text style={styles.label}><Text style={styles.bold}>Measurement: </Text>{product.measurement}</Text>
-                </View>
-                <Text style={styles.arrow}>›</Text>
-              </View>
-            ))}
+         
+              {filteredProducts.map((product, index) => (
+    <TouchableOpacity
+      key={index}
+      style={styles.card}
+      onPress={() => navigation.navigate('ProductDetail', { productId: product.productId })}
+      >
+      <Image source={renderImage(product.image)} style={styles.image} />
+      <View style={styles.info}>
+        <Text style={styles.title}>{product.name}</Text>
+        <Text style={styles.label}><Text style={styles.bold}>Quantity: </Text>{product.quantity}</Text>
+        <Text style={styles.label}>
+          <Text style={styles.label}><Text style={styles.bold}>Supplier ID: </Text>{product.supplierId}</Text>
+          </Text>
+        <Text style={styles.label}><Text style={styles.bold}>Measurement: </Text>{product.measurement}</Text>
+      </View>
+      <Text style={styles.arrow}>›</Text>
+    </TouchableOpacity>
+  ))}
           </ScrollView>
         )}
       </View>
