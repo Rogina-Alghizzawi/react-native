@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { getStockLevels } from '../services/product'; // Adjust the import path as necessary
 import { useNavigation } from '@react-navigation/native';
+import { getSuppliers } from '../services/supplier'; 
 const fallbackImage = require('../assets/Images/logo.png'); // fallback image for products without one
 
 const StockScreen = () => {
@@ -19,22 +20,31 @@ const StockScreen = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [suppliers, setSuppliers] = useState<any[]>([]);
   const navigation: any = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const response = await getStockLevels();
-      setData(response);
-      if (response.length > 0) {
-        setActiveCategory(response[0].category);
-        setProducts(response[0].products);
+  
+      const [stockResponse, supplierResponse] = await Promise.all([
+        getStockLevels(),
+        getSuppliers()
+      ]);
+  
+      setData(stockResponse);
+      setSuppliers(supplierResponse);
+  
+      if (stockResponse.length > 0) {
+        setActiveCategory(stockResponse[0].category);
+        setProducts(stockResponse[0].products);
       }
+  
       setLoading(false);
     };
     fetchData();
   }, []);
-
+  
   useEffect(() => {
     if (data.length === 0) return;
     const selected = data.find((cat) => cat.category === activeCategory);
@@ -108,9 +118,13 @@ return (
       <View style={styles.info}>
         <Text style={styles.title}>{product.name}</Text>
         <Text style={styles.label}><Text style={styles.bold}>Quantity: </Text>{product.quantity}</Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}><Text style={styles.bold}>Supplier ID: </Text>{product.supplierId}</Text>
-          </Text>
+  
+       <Text style={styles.label}>
+       <Text style={styles.bold}>Supplier: </Text>
+                    {
+                        suppliers.find((s) => s.id === product.supplierId)?.name || 'Unknown'
+                    }
+       </Text>
         <Text style={styles.label}><Text style={styles.bold}>Measurement: </Text>{product.measurement}</Text>
       </View>
       <Text style={styles.arrow}>›</Text>
