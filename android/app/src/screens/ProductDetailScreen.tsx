@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { getProductById } from '../services/product';
 import { getSuppliers } from '../services/supplier';
+import EditSvg from '../assets/SVG/edit-svgrepo-com.svg';
 
 const fallbackImage = require('../assets/Images/logo.png');
 const trashIcon = require('../assets/Images/delete.png');
@@ -23,6 +23,7 @@ const ProductDetailScreen = () => {
   const [product, setProduct] = useState<any>(null);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigation: any = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,20 +81,24 @@ const ProductDetailScreen = () => {
         <Text style={styles.headerText}>Product Details</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.card}>
-          <TouchableOpacity style={styles.editIcon}>
-            <Icon name="edit" size={20} color="#457BFF" />
+<ScrollView contentContainerStyle={styles.scrollContent}>
+  <View style={styles.card}>
+    <TouchableOpacity style={styles.editIcon} onPress={() => navigation.navigate('EditProduct', { productId: product.id })}>
+
+            <EditSvg width={20} height={20} fill="#457BFF" />
+
           </TouchableOpacity>
-          <Text style={styles.productName}>{product.name}</Text>
           <Image
             source={renderImage(product.image)}
             style={styles.productImage}
           />
 
           <View style={styles.infoContainer}>
+          <Text style={styles.row}>
+              <Text style={styles.label}>Product Name: </Text>{product.name}
+            </Text>
             <Text style={styles.row}>
-              <Text style={styles.label}>Category: </Text>Clothes
+              <Text style={styles.label}>Category: </Text>{product.category.name}
             </Text>
             <Text style={styles.row}>
               <Text style={styles.label}>Quantity: </Text>
