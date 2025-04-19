@@ -12,28 +12,69 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { createProduct } from '../services/product';
-import { getLocations } from '../services/locationService'; // ✅ import your location service
+import { getInventories } from '../services/inventoryService';
+import { getCategories } from '../services/categoryService';
+import { getSuppliers } from '../services/supplier';
+import { getProductStatuses } from '../services/productStatusService';
 
 const AddProductScreen = () => {
   const [category, setCategory] = useState('');
   const [productName, setProductName] = useState('');
-  const [location, setLocation] = useState('');
-  const [locations, setLocations] = useState([]); // ✅ state to hold dropdown options
+  const [inventoryList, setInventoryList] = useState([]);
+  const [selectedInventory, setSelectedInventory] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [supplier, setSupplier] = useState('');
   const [image, setImage] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [barcode, setBarcode] = useState('');
+  const [status, setStatus] = useState('1');
+  const [unitMeasurement, setUnitMeasurement] = useState('Piece');
+  const [description, setDescription] = useState('');
+  const [statuses, setStatuses] = useState([]);
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchInventories = async () => {
       try {
-        const data = await getLocations();
-        setLocations(data);
+        const data = await getInventories();
+        setInventoryList(data);
       } catch (error) {
-        console.error('Error fetching locations', error);
+        console.error('Error fetching inventories', error);
       }
     };
-    fetchLocations();
+
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories', error);
+      }
+    };
+
+    const fetchSuppliers = async () => {
+      try {
+        const data = await getSuppliers();
+        setSuppliers(data);
+      } catch (error) {
+        console.error('Error fetching suppliers', error);
+      }
+    };
+
+    const fetchStatuses = async () => {
+      try {
+        const data = await getProductStatuses();
+        setStatuses(data);
+      } catch (error) {
+        console.error('Error fetching statuses', error);
+      }
+    };
+
+    fetchStatuses();
+    fetchSuppliers();
+    fetchCategories();
+    fetchInventories();
   }, []);
 
   const handleImagePick = async () => {
@@ -44,66 +85,110 @@ const AddProductScreen = () => {
   };
 
   const handleSubmit = async () => {
-    if (!category || !productName || !location || !quantity || !price || !supplier) {
-      Alert.alert('❗ Error', 'All fields are required.');
+    if (!category || !productName.trim() || !selectedInventory || !quantity || !price || !supplier || !barcode.trim() || !status || !unitMeasurement || !description.trim() || !image?.uri) {
+      Alert.alert('❗ Error', 'Please fill out all required fields.');
       return;
     }
 
     try {
       await createProduct({
-        name: productName,
+        name: productName.trim(),
         categoryId: parseInt(category),
         price: parseFloat(price),
-        barcode: '1234567890',
+        barcode: barcode.trim(),
         quantity: parseInt(quantity),
-        status: 1,
+        status: parseInt(status),
         supplierId: parseInt(supplier),
-        inventoryId: parseInt(location),
-        unitMeasurement: 'Piece',
-        description: 'Added via mobile app',
-        imagePath: image?.uri || '',
+        inventoryId: parseInt(selectedInventory),
+        unitMeasurement: unitMeasurement,
+        description: description.trim(),
+        imagePath: image.uri,
       });
 
       Alert.alert('✅ Success', 'Product created successfully');
     } catch (error) {
+      console.error('❌ Error creating product:', error);
       Alert.alert('❌ Error', 'Failed to create product');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.header}>Add New Product</Text>
+      {/* <View style={styles.header}>
+      </View> */}
+        <Text style={styles.headerText}>Add New Product</Text>
 
-      <TextInput style={styles.input} placeholder="Category ID" onChangeText={setCategory} value={category} />
-      <TextInput style={styles.input} placeholder="Product Name" onChangeText={setProductName} value={productName} />
+      <View style={styles.card}>
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={category} onValueChange={setCategory}>
+            <Picker.Item label="Select Category" value="" />
+            {categories.map((cat) => (
+              <Picker.Item key={cat.value} label={cat.label} value={cat.value} />
+            ))}
+          </Picker>
+        </View>
 
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={location}
-          onValueChange={(value) => setLocation(value)}
-        >
-          <Picker.Item label="Select Inventory Location" value="" />
-          {locations.map((loc) => (
-            <Picker.Item key={loc.value} label={loc.label} value={loc.value} />
-          ))}
-        </Picker>
+        <TextInput style={styles.input} placeholder="Product Name" onChangeText={setProductName} value={productName} />
+
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={selectedInventory} onValueChange={setSelectedInventory}>
+            <Picker.Item label="Select Inventory" value="" />
+            {inventoryList.map((inv) => (
+              <Picker.Item key={inv.value} label={inv.label} value={inv.value} />
+            ))}
+          </Picker>
+        </View>
+
+        <TextInput style={styles.input} placeholder="Quantity" keyboardType="numeric" onChangeText={setQuantity} value={quantity} />
+        <TextInput style={styles.input} placeholder="Price" keyboardType="decimal-pad" onChangeText={setPrice} value={price} />
+
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={supplier} onValueChange={setSupplier}>
+            <Picker.Item label="Select Supplier" value="" />
+            {suppliers.map((sup) => (
+              <Picker.Item key={sup.value} label={sup.label} value={sup.value} />
+            ))}
+          </Picker>
+        </View>
+
+        <TextInput style={styles.input} placeholder="Barcode" onChangeText={setBarcode} value={barcode} />
+
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={status} onValueChange={setStatus}>
+            <Picker.Item label="Select Status" value="" />
+            {statuses.map((s) => (
+              <Picker.Item key={s.value} label={`${s.label} (ID: ${s.value})`} value={s.value.toString()} />
+            ))}
+          </Picker>
+        </View>
+
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={unitMeasurement} onValueChange={setUnitMeasurement}>
+            <Picker.Item label="Piece" value="Piece" />
+            <Picker.Item label="Kg" value="Kg" />
+            <Picker.Item label="Liter" value="Liter" />
+            <Picker.Item label="Box" value="Box" />
+          </Picker>
+        </View>
+
+        <TextInput
+          style={[styles.input, { height: 80 }]}
+          placeholder="Description"
+          onChangeText={setDescription}
+          value={description}
+          multiline
+        />
+
+        <TouchableOpacity onPress={handleImagePick} style={styles.uploadButton}>
+          <Text style={styles.uploadText}>{image ? 'Image Selected' : 'Upload Product Image'}</Text>
+        </TouchableOpacity>
+
+        {image?.uri && <Image source={{ uri: image.uri }} style={styles.previewImage} />}
+
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitText}>Add Product</Text>
+        </TouchableOpacity>
       </View>
-
-      <TextInput style={styles.input} placeholder="Quantity" keyboardType="numeric" onChangeText={setQuantity} value={quantity} />
-      <TextInput style={styles.input} placeholder="Price" keyboardType="decimal-pad" onChangeText={setPrice} value={price} />
-      <TextInput style={styles.input} placeholder="Supplier ID" onChangeText={setSupplier} value={supplier} />
-
-      <TouchableOpacity onPress={handleImagePick} style={styles.uploadButton}>
-        <Text style={styles.uploadText}>{image ? 'Image Selected' : 'Upload Product Image'}</Text>
-      </TouchableOpacity>
-
-      {image?.uri && (
-        <Image source={{ uri: image.uri }} style={styles.previewImage} />
-      )}
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Add Product</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -115,11 +200,29 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
+    backgroundColor: '#7BA4FF',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
+  },
+  headerText: {
+    color: 'white',
     fontSize: 22,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#1042c7',
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginTop: 20,
+    marginBottom: 30,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 25,
   },
   input: {
     backgroundColor: '#fff',

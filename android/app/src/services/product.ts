@@ -50,6 +50,8 @@ export const getProductById = async (id: number) => {
     await axios.put(`${API_BASE_URL}/Products/${id}`, payload);
   };
 
+
+  // Define the CreateProductPayload type
   interface CreateProductPayload {
     name: string;
     categoryId: number;
@@ -63,43 +65,28 @@ export const getProductById = async (id: number) => {
     description: string;
     imagePath: string;
   }
-
-  export const createProduct = async ({
-    name,
-    categoryId,
-    price,
-    barcode,
-    quantity,
-    status,
-    supplierId,
-    inventoryId,
-    unitMeasurement,
-    description,
-    imagePath,
-  }: CreateProductPayload) => {
+  
+  export const createProduct = async (productData: CreateProductPayload) => {
     const payload = {
-      p_name: name,
-      p_category_id: categoryId,
-      p_price: price,
-      p_barcode: barcode,
-      p_quantity: quantity,
-      p_status: status,
-      p_supplier_id: supplierId,
-      p_inventory_id: inventoryId,
-      p_unit_measurement: unitMeasurement,
-      p_description: description,
-      p_image_path: imagePath,
+      name: productData.name,
+      categoryId: productData.categoryId,
+      price: productData.price,
+      barcode: productData.barcode,
+      quantity: productData.quantity,
+      status: productData.status,
+      supplierId: productData.supplierId,
+      inventoryId: productData.inventoryId,
+      unitMeasurement: productData.unitMeasurement,
+      description: productData.description,
+      imagePath: productData.imagePath,
     };
+    
   
     try {
-      const response = await axios.post(API_BASE_URL, payload);
+      const response = await axios.post(`${API_BASE_URL}/Products`, payload);
       return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('❌ Error creating product:', error.response?.data || error.message);
-      } else {
-        console.error('❌ Error creating product:', error);
-      }
+    } catch (error: any) {
+      console.error('❌ Error creating product:', error.response?.data?.errors || error.message);
       throw error;
     }
   };
