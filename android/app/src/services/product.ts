@@ -30,28 +30,40 @@ export const getProductById = async (id: number) => {
       },
     });
   
-    return res.data.imagePath; // تأكد أن backend يرجع هذا المفتاح
+    return res.data.imagePath; 
   };
   
-  // ⬆️ تحديث المنتج عبر API
-  export const updateProductById = async (id: number, product: any) => {
-    const payload = {
-      name: product.name,
-      categoryId: product.categoryId || 1, // مثال: تأكد من تمرير قيمة موجودة
-      price: product.price,
-      barcode: product.barcode,
-      quantity: product.quantity,
-      status: product.status || 1, // يمكن تعديلها حسب الحالة
-      unitMeasurement: product.unitMeasurement,
-      description: product.description || '', // اجعلها اختيارية
-      imagePath: product.imagePath,
-    };
   
-    await axios.put(`${API_BASE_URL}/Products/${id}`, payload);
+
+
+
+
+
+
+export const updateProductById = async (productId: number, product: any) => {
+  const payload = {
+    id: productId,
+    name: product.name,
+    categoryId: product.categoryId,
+    price: product.price,
+    barcode: product.barcode,
+    quantity: product.quantity,
+    status: product.status,
+    unitMeasurement: product.unitMeasurement,
+    description: product.description,
+    imagePath: product.imagePath,
   };
 
+  const response = await axios.put(`${API_BASE_URL}/Products/${productId}`, payload);
+  return response.data;
+};
 
-  // Define the CreateProductPayload type
+
+
+
+
+
+
   interface CreateProductPayload {
     name: string;
     categoryId: number;
