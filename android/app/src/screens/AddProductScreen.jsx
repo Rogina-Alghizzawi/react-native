@@ -17,6 +17,7 @@ import { getCategories } from '../services/categoryService';
 import { getSuppliers } from '../services/supplier';
 import { getProductStatuses } from '../services/productStatusService';
 import { useNavigation } from '@react-navigation/native';
+import { checkRoleAccess } from '../utils/checkRoleAccess';
 
 const AddProductScreen = () => {
   const [category, setCategory] = useState('');
@@ -35,7 +36,15 @@ const AddProductScreen = () => {
   const [description, setDescription] = useState('');
   const [statuses, setStatuses] = useState([]);
     const navigation = useNavigation();
-  
+
+
+
+    useEffect(() => {
+      checkRoleAccess([3], navigation); 
+    }, [navigation]);
+
+
+    
   useEffect(() => {
     const fetchInventories = async () => {
       try {

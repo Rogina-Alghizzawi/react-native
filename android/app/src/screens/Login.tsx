@@ -52,7 +52,7 @@ const Login = ({ navigation }: any) => {
         if (decoded && (decoded.Role_Id === "2" || decoded.Role_Id === "3")) {
           await AsyncStorage.setItem('userToken', token);
           Alert.alert("Success", "You are logged in!");
-          navigation.navigate('Stock');
+          navigation.navigate('Stock', { roleId: decoded.Role_Id });
         } else {
           Alert.alert("Access Denied", "You are not allowed to log in with this account.");
         }

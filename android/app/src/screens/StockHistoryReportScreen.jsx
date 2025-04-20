@@ -14,6 +14,8 @@ import { fetchStockHistory } from '../services/stockHistoryApi';
 import { getStockLevels } from '../services/product';
 import { BarChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { checkRoleAccess } from '../utils/checkRoleAccess';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -23,6 +25,13 @@ const StockHistoryReportScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [stockLevels, setStockLevels] = useState([]);
+  const navigation = useNavigation();
+
+
+ useEffect(() => {
+    checkRoleAccess([2], navigation); 
+  }, [navigation]);
+
 
   useEffect(() => {
     const fetchData = async () => {

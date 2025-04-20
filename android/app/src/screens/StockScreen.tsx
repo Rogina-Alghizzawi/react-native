@@ -12,6 +12,7 @@ import {
 import { getStockLevels } from '../services/product'; // Adjust the import path as necessary
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { getSuppliers } from '../services/supplier'; 
+
 const fallbackImage = require('../assets/Images/logo.png'); // fallback image for products without one
 
 const StockScreen = () => {

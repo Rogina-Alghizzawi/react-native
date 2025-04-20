@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { fetchReorderHistory } from '../services/reorderApi';
+import { checkRoleAccess } from '../utils/checkRoleAccess';
+import { useNavigation } from '@react-navigation/native';
 
 const ReorderHistoryScreen = () => {
   const [reorders, setReorders] = useState([]);
@@ -18,7 +20,16 @@ const ReorderHistoryScreen = () => {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [filteredReorders, setFilteredReorders] = useState([]);
+  const navigation = useNavigation();
 
+
+
+
+  useEffect(() => {
+    checkRoleAccess([2], navigation); 
+  }, [navigation]);
+
+  
   useEffect(() => {
     const fetchData = async () => {
       try {

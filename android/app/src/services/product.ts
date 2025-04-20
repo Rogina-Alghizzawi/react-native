@@ -38,7 +38,10 @@ export const getProductById = async (id: number) => {
 
 
 
-
+  export const deleteProductById = async (id: number) => {
+    const url = `${API_BASE_URL}/Products/${id}`;
+    return await axios.delete(url);
+  }
 
 export const updateProductById = async (productId: number, product: any) => {
   const payload = {

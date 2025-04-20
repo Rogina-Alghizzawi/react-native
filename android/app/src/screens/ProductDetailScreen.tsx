@@ -7,11 +7,12 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
+ Alert } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { getProductById } from '../services/product';
+import { getProductById,deleteProductById  } from '../services/product';
 import { getSuppliers } from '../services/supplier';
 import EditSvg from '../assets/SVG/edit-svgrepo-com.svg';
+import { checkRoleAccess } from '../utils/checkRoleAccess';
 
 const fallbackImage = require('../assets/Images/logo.png');
 const trashIcon = require('../assets/Images/delete.png');
@@ -19,12 +20,44 @@ const trashIcon = require('../assets/Images/delete.png');
 const ProductDetailScreen = () => {
   const route = useRoute();
   const { productId } = route.params as { productId: number };
-
   const [product, setProduct] = useState<any>(null);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const navigation: any = useNavigation();
-
+      
+  const handleDelete = async () => {
+    const isAllowed = await checkRoleAccess([3], navigation); 
+  
+    if (!isAllowed) return; 
+  
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this product?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              await deleteProductById(product.id);
+              Alert.alert('Success', 'Product deleted successfully.');
+              navigation.navigate('Stock');
+            } catch (error) {
+              console.error('Delete failed:', error);
+              Alert.alert('Error', 'Failed to delete product.');
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -123,9 +156,12 @@ const ProductDetailScreen = () => {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => console.log('Delete')}>
-            <Image source={trashIcon} style={styles.trashIcon} />
-          </TouchableOpacity>
+          <TouchableOpacity
+  onPress={() => handleDelete()}
+>
+  <Image source={trashIcon} style={styles.trashIcon} />
+</TouchableOpacity>
+
         </View>
       </ScrollView>
     </View>

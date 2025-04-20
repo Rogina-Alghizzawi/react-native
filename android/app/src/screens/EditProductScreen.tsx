@@ -17,6 +17,7 @@ import { getProductById, updateProductById } from '../services/product';
 import { getProductStatuses } from '../services/productStatusService';
 import { getCategories } from '../services/categoryService';
 
+import { checkRoleAccess } from '../utils/checkRoleAccess';
 
 
 const EditProductScreen = () => {
@@ -37,7 +38,10 @@ const EditProductScreen = () => {
   const route = useRoute();
   const { productId } = route.params as { productId: string };
 
-
+  useEffect(() => {
+    checkRoleAccess([3], navigation); 
+  }, [navigation]);
+  
 
 
   useEffect(() => {

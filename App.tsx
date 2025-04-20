@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import ReorderHistoryScreen from './android/app/src/screens/ReorderHistoryScreen';
+import InventoryAnalyticsScreen from './android/app/src/screens/InventoryAnalyticsScreen';
 import StaffRegister from './android/app/src/screens/StaffRegister';
 
 import StockScreen from './android/app/src/screens/StockScreen';
@@ -10,6 +11,7 @@ import EditProductScreen from './android/app/src/screens/EditProductScreen';
 import Login from './android/app/src/screens/Login';
 import StockHistoryReportScreen from './android/app/src/screens/StockHistoryReportScreen';
 import AddProductScreen from './android/app/src/screens/AddProductScreen';
+// import RoleBasedHomeScreen from './android/app/src/screens/RoleBasedHomeScreen';
 
 export type RootStackParamList = {
   Stock: undefined;
@@ -21,6 +23,8 @@ export type RootStackParamList = {
   StockHistoryReportScreen:undefined;
   ReorderHistoryScreen:undefined;
   StaffRegister:undefined;
+  InventoryAnalyticsScreen:undefined;
+  RoleBasedHomeScreen: { roleId: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -28,21 +32,29 @@ const Stack = createStackNavigator<RootStackParamList>();
 const App = () => {
   return (
     <NavigationContainer>
-       
-   
-      <Stack.Navigator initialRouteName="login" screenOptions={{ headerShown: false }}>
+     
+
+     <Stack.Navigator initialRouteName="login" screenOptions={{ headerShown: false }}> 
+     <Stack.Screen name="login" component={Login} />
+
         <Stack.Screen name="Stock" component={StockScreen} 
        />
         <Stack.Screen name="EditProduct" component={EditProductScreen} 
         
         
         />
-
+           {/* <Stack.Screen
+           name="RoleBasedHomeScreen"
+          component={RoleBasedHomeScreen}
+         /> */}
+     <Stack.Screen
+           name="InventoryAnalyticsScreen"
+          component={InventoryAnalyticsScreen}
+         />
 <Stack.Screen name="StaffRegister" component={StaffRegister} />
 
         <Stack.Screen name="ProductDetail" component={ProductDetailScreen} 
          />
-        <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="StockHistoryReport" component={StockHistoryReportScreen} 
           />
 
@@ -55,7 +67,7 @@ const App = () => {
            <Stack.Screen
            name="ReorderHistoryScreen"
           component={ReorderHistoryScreen} //the logic here???
-         />
+         /> 
          
       </Stack.Navigator>
     </NavigationContainer>
