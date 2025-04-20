@@ -16,6 +16,7 @@ import { getInventories } from '../services/inventoryService';
 import { getCategories } from '../services/categoryService';
 import { getSuppliers } from '../services/supplier';
 import { getProductStatuses } from '../services/productStatusService';
+import { useNavigation } from '@react-navigation/native';
 
 const AddProductScreen = () => {
   const [category, setCategory] = useState('');
@@ -33,7 +34,8 @@ const AddProductScreen = () => {
   const [unitMeasurement, setUnitMeasurement] = useState('Piece');
   const [description, setDescription] = useState('');
   const [statuses, setStatuses] = useState([]);
-
+    const navigation = useNavigation();
+  
   useEffect(() => {
     const fetchInventories = async () => {
       try {
@@ -106,6 +108,8 @@ const AddProductScreen = () => {
       });
 
       Alert.alert('✅ Success', 'Product created successfully');
+      navigation.navigate('Stock');
+
     } catch (error) {
       console.error('❌ Error creating product:', error);
       Alert.alert('❌ Error', 'Failed to create product');
@@ -139,8 +143,61 @@ const AddProductScreen = () => {
           </Picker>
         </View>
 
-        <TextInput style={styles.input} placeholder="Quantity" keyboardType="numeric" onChangeText={setQuantity} value={quantity} />
-        <TextInput style={styles.input} placeholder="Price" keyboardType="decimal-pad" onChangeText={setPrice} value={price} />
+        {/* <TextInput style={styles.input} placeholder="Quantity" keyboardType="numeric" onChangeText={setQuantity} value={quantity} /> */}
+            <Text style={{ marginBottom: 6, fontWeight: '600' }}>Quantity</Text>
+            <View style={styles.compactInputRow}>
+              <TouchableOpacity style={styles.compactAdjustButton} onPress={() => setQuantity((prev) => `${Math.max(0, parseInt(prev || '0') - 1)}`)}>
+                <Text style={styles.compactAdjustText}>-</Text>
+              </TouchableOpacity>
+
+              <TextInput
+                style={styles.compactInput}
+                keyboardType="numeric"
+                value={quantity}
+                onChangeText={setQuantity}
+              />
+
+              <TouchableOpacity style={styles.compactAdjustButton} onPress={() => setQuantity((prev) => `${parseInt(prev || '0') + 1}`)}>
+                <Text style={styles.compactAdjustText}>+</Text>
+              </TouchableOpacity>
+            </View>
+
+
+
+        <Text style={{ marginBottom: 6, fontWeight: '600' }}>Price</Text>
+          <View style={styles.compactInputRow}>
+            <TouchableOpacity
+              style={styles.compactAdjustButton}
+              onPress={() =>
+                setPrice((prev) => {
+                  const current = parseFloat(prev || '0');
+                  return current > 0 ? (current - 1).toFixed(2) : '0';
+                })
+              }
+            >
+              <Text style={styles.compactAdjustText}>-</Text>
+            </TouchableOpacity>
+
+            <TextInput
+              style={styles.compactInput}
+              keyboardType="decimal-pad"
+              value={price}
+              onChangeText={setPrice}
+            />
+
+            <TouchableOpacity
+              style={styles.compactAdjustButton}
+              onPress={() =>
+                setPrice((prev) => {
+                  const current = parseFloat(prev || '0');
+                  return (current + 1).toFixed(2);
+                })
+              }
+            >
+              <Text style={styles.compactAdjustText}>+</Text>
+            </TouchableOpacity>
+          </View>
+
 
         <View style={styles.pickerContainer}>
           <Picker selectedValue={supplier} onValueChange={setSupplier}>
@@ -273,6 +330,41 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  compactInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 14,
+    backgroundColor: '#fff',
+  },
+  
+  compactAdjustButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: '#EAF1FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  compactAdjustText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#457BFF',
+  },
+  
+  compactInput: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 16,
+    paddingVertical: 8,
+    backgroundColor: '#fff',
+    color: '#333',
+  },
+  
+  
 });
 
 export default AddProductScreen;

@@ -135,13 +135,17 @@ const Login = ({ navigation }: any) => {
 
       {/* Register Link */}
       <View style={styles.register}>
-        <Text style={styles.register}>
-          Don't have an account?{" "}
-          <Text onPress={() => navigation.navigate('Register')} style={{ color: '#00ADEE', fontWeight: 'bold' }}>
-            Register
-          </Text>
-        </Text>
-      </View>
+  <Text style={styles.register}>
+    Don't have an account?{' '}
+    <Text
+      style={{ color: '#00ADEE', fontWeight: 'bold' }}
+      onPress={() => navigation.navigate('StaffRegister')}
+    >
+      Register
+    </Text>
+  </Text>
+</View>
+
     </View>
   );
 }; // end

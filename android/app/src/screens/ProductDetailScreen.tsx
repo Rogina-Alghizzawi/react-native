@@ -52,9 +52,10 @@ const ProductDetailScreen = () => {
   };
 
   const getSupplierName = (id: number) => {
-    const supplier = suppliers.find((s) => s.id === id);
-    return supplier ? supplier.name : 'Unknown';
+    const supplier = suppliers.find((s) => s.value === id);
+    return supplier ? supplier.label : 'Unknown';
   };
+  
 
   if (loading) {
     return (

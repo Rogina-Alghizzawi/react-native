@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { getStockLevels } from '../services/product'; // Adjust the import path as necessary
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { getSuppliers } from '../services/supplier'; 
 const fallbackImage = require('../assets/Images/logo.png'); // fallback image for products without one
 
@@ -23,28 +23,59 @@ const StockScreen = () => {
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const navigation: any = useNavigation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
   
-      const [stockResponse, supplierResponse] = await Promise.all([
-        getStockLevels(),
-        getSuppliers()
-      ]);
+  //     const [stockResponse, supplierResponse] = await Promise.all([
+  //       getStockLevels(),
+  //       getSuppliers()
+  //     ]);
   
-      setData(stockResponse);
-      setSuppliers(supplierResponse);
+  //     setData(stockResponse);
+  //     setSuppliers(supplierResponse);
   
-      if (stockResponse.length > 0) {
-        setActiveCategory(stockResponse[0].category);
-        setProducts(stockResponse[0].products);
-      }
+  //     if (stockResponse.length > 0) {
+  //       setActiveCategory(stockResponse[0].category);
+  //       setProducts(stockResponse[0].products);
+  //     }
   
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+  //     setLoading(false);
+  //   };
+  //   fetchData();
+  // }, []);
   
+
+
+
+  const fetchData = async () => {
+    setLoading(true);
+  
+    const [stockResponse, supplierResponse] = await Promise.all([
+      getStockLevels(),
+      getSuppliers()
+    ]);
+  
+    setData(stockResponse);
+    setSuppliers(supplierResponse);
+  
+    if (stockResponse.length > 0) {
+      setActiveCategory(stockResponse[0].category);
+      setProducts(stockResponse[0].products);
+    }
+  
+    setLoading(false);
+  };
+  
+
+  const isFocused = useIsFocused();
+
+useEffect(() => {
+  if (isFocused) {
+    fetchData(); // 👈 يعيد تحميل البيانات كل مرة ترجع فيها الشاشة للفوكس
+  }
+}, [isFocused]);
+
   useEffect(() => {
     if (data.length === 0) return;
     const selected = data.find((cat) => cat.category === activeCategory);
@@ -67,9 +98,9 @@ const StockScreen = () => {
 return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.headerText}>Available Stock</Text>
-      </View>
+      </View> */}
   
       {/* Tabs */}
       <View >
@@ -98,8 +129,12 @@ return (
             value={search}
             onChangeText={setSearch}
           />
+
+
+          
         </View>
-  
+      
+
         {/* Product List */}
         {loading ? (
           <ActivityIndicator size="large" color="#457BFF" style={{ marginTop: 20 }} />
@@ -120,11 +155,12 @@ return (
         <Text style={styles.label}><Text style={styles.bold}>Quantity: </Text>{product.quantity}</Text>
   
        <Text style={styles.label}>
-       <Text style={styles.bold}>Supplier: </Text>
-                    {
-                        suppliers.find((s) => s.id === product.supplierId)?.name || 'Unknown'
-                    }
-       </Text>
+  <Text style={styles.bold}>Supplier: </Text>
+  {
+    suppliers.find((s) => s.value === product.supplierId)?.label || 'Unknown'
+  }
+</Text>
+
         <Text style={styles.label}><Text style={styles.bold}>Measurement: </Text>{product.measurement}</Text>
       </View>
       <Text style={styles.arrow}>›</Text>
@@ -135,9 +171,12 @@ return (
       </View>
   
       {/* Floating Button */}
-      <TouchableOpacity style={styles.fab}>
-        <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+      <TouchableOpacity
+          style={styles.fab}
+          onPress={() => navigation.navigate('AddProductScreen')}
+        >
+          <Text style={styles.fabText}>+</Text>
+        </TouchableOpacity>
     </View>
   );
 }  

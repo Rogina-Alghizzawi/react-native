@@ -14,6 +14,7 @@ import MapPinIcon from '../assets/SVG/map-pin.svg';
 import PhoneIcon from '../assets/SVG/phone.svg';
 import EyeIcon from '../assets/SVG/eye.svg';
 import EyeOffIcon from '../assets/SVG/eye-off.svg';
+import { useNavigation } from '@react-navigation/native';
 
 const StaffRegister = () => {
   const [firstName, setFirstName] = useState('');
@@ -25,6 +26,8 @@ const StaffRegister = () => {
   const [locations, setLocations] = useState<{ label: string; value: string }[]>([]);
   const [phone, setPhone] = useState('');
   const [image, setImage] = useState<any>(null);
+  const navigation =useNavigation<any>();
+
 
   useEffect(() => {
     const loadLocations = async () => {
@@ -67,7 +70,7 @@ const StaffRegister = () => {
                 setPhone('');
                 setLocationId('');
                 setImage(null);
-                // navigation.navigate('Login');
+                navigation.navigate('login');
               }
             }
           ]

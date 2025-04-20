@@ -17,6 +17,8 @@ import { getProductById, updateProductById } from '../services/product';
 import { getProductStatuses } from '../services/productStatusService';
 import { getCategories } from '../services/categoryService';
 
+
+
 const EditProductScreen = () => {
   const [productName, setProductName] = useState('');
   const [unitMeasurement, setUnitMeasurement] = useState('');
@@ -31,9 +33,12 @@ const EditProductScreen = () => {
   const [image, setImage] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const route = useRoute();
   const { productId } = route.params as { productId: string };
+
+
+
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -109,7 +114,8 @@ const EditProductScreen = () => {
       });
 
       Alert.alert('Success', 'Product updated successfully.');
-      navigation.goBack();
+      navigation.navigate('Stock');
+
     } catch (error) {
       console.error('Update failed:', error);
       Alert.alert('Error', 'Failed to update product.');
@@ -124,6 +130,9 @@ const EditProductScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.header}>
+        </View>
+      <View style={styles.card}>
       <Text style={styles.label}>Product Name:</Text>
       <TextInput style={styles.input} value={productName} onChangeText={setProductName} />
 
@@ -197,6 +206,7 @@ const EditProductScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleUpdate}>
         <Text style={styles.buttonText}>Update</Text>
       </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -205,6 +215,19 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#fff',
+  },
+  header: {
+    backgroundColor: '#7BA4FF',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 60,
+    borderBottomRightRadius: 60,
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
   },
   label: {
     marginTop: 10,
@@ -261,6 +284,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 20,
+  },
+  
   previewImage: {
     width: '100%',
     height: 200,
